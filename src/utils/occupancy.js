@@ -4,22 +4,26 @@ function calculateOccupancyPercentage(library) {
   const occupancyHistory = library.occupancy?.history || [];
 
   const now = new Date();
-  const oneMinuteAgo = now.getTime() - ONE_MINUTE_IN_MS;
+  const oneMinuteAgo = new Date(
+    now.getTime() - ONE_MINUTE_IN_MS
+  ).toLocaleString();
 
   const lastOneMinuteOccupancies = occupancyHistory.filter((occupancy) => {
-    const timestamp = new Date(occupancy.timestamp).getTime();
+    const timestamp = new Date(occupancy.timestamp).toLocaleString();
     return timestamp >= oneMinuteAgo;
   });
 
   const capacity = library.capacity;
 
   const currentPeopleCount = lastOneMinuteOccupancies.reduce(
-    (sum, occupancy) => sum + occupancy.peopleCount,
+    (sum, occupancy) => sum + occupancy.peopleCount / capacity,
     0
   );
 
+  const lastOneMinuteOccupanciesCount = lastOneMinuteOccupancies.length;
+
   const occupancyPercentage =
-    currentPeopleCount / (capacity * lastOneMinuteOccupancies.length);
+    currentPeopleCount / lastOneMinuteOccupanciesCount;
 
   return {
     occupancyPercentage: occupancyPercentage || 0,
