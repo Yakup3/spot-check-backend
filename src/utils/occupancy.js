@@ -1,4 +1,4 @@
-const ONE_MINUTE_IN_MS = 60000;
+const ONE_MINUTE_IN_MS = 600000;
 
 function calculateOccupancyPercentage(library) {
   const occupancyHistory = library.occupancy?.history || [];
@@ -8,7 +8,7 @@ function calculateOccupancyPercentage(library) {
 
   const lastOneMinuteOccupancies = occupancyHistory.filter((occupancy) => {
     const timestamp = new Date(occupancy.timestamp);
-    return timestamp >= oneMinuteAgo && timestamp < now;
+    return timestamp >= oneMinuteAgo && timestamp <= now;
   });
 
   const capacity = library.capacity;
@@ -25,10 +25,7 @@ function calculateOccupancyPercentage(library) {
       ? currentPeopleCount / (lastOneMinuteOccupanciesCount * capacity)
       : 0;
 
-  return {
-    occupancyPercentage: occupancyPercentage || 0,
-    lastOneMinuteOccupancies,
-  };
+  return occupancyPercentage;
 }
 
 module.exports = calculateOccupancyPercentage;
