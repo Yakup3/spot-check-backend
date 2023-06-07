@@ -3,11 +3,11 @@ const ONE_MINUTE_IN_MS = 60000;
 function calculateOccupancyPercentage(library) {
   const occupancyHistory = library.occupancy?.history || [];
 
-  const now = Date.now();
-  const oneMinuteAgo = now - ONE_MINUTE_IN_MS;
+  const now = new Date();
+  const oneMinuteAgo = new Date(now.getTime() - ONE_MINUTE_IN_MS);
 
   const lastOneMinuteOccupancies = occupancyHistory.filter((occupancy) => {
-    const timestamp = Date.parse(occupancy.timestamp);
+    const timestamp = new Date(occupancy.timestamp);
     return timestamp >= oneMinuteAgo;
   });
 
