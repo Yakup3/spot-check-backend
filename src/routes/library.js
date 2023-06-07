@@ -52,12 +52,14 @@ router.get("/", authenticate, async (req, res) => {
 
     const libraries = await db.collection(collectionName).find().toArray();
 
-    const libraryList = libraries.map((library) => ({
-      id: library._id,
-      name: library.name,
-      location: library.location,
-      occupancyPercentage: calculateOccupancyPercentage(library),
-    }));
+    const libraryList = libraries.map((library) => {
+      return {
+        id: library._id,
+        name: library.name,
+        location: library.location,
+        occupancyPercentage: calculateOccupancyPercentage(library),
+      };
+    });
 
     res.status(200).json({ libraryList, success: true });
   } catch (error) {
