@@ -11,14 +11,15 @@ function calculateOccupancyPercentage(library) {
     return timestamp >= oneMinuteAgo;
   });
 
+  const capacity = library.capacity || 0;
+
   const currentPeopleCount = lastOneMinuteOccupancies.reduce(
-    (sum, occupancy) => sum + occupancy.peopleCount,
+    (sum, occupancy) => sum + occupancy.peopleCount / capacity,
     0
   );
 
-  const capacity = library.capacity || 0;
   const occupancyPercentage =
-    currentPeopleCount / lastOneMinuteOccupancies.length / capacity;
+    currentPeopleCount / (lastOneMinuteOccupancies.length || 1);
 
   return occupancyPercentage;
 }
