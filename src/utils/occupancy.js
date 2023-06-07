@@ -1,35 +1,33 @@
-const moment = require("moment");
-
 function calculateOccupancyPercentage(library) {
-  const occupancyHistory = library.occupancy?.history || [];
+  const currentTimestamp = new Date();
 
-  // const now = moment();
-  // const oneMinuteAgo = moment(now).subtract(10, "minutes");
+  // Filter the data that occurred in the previous one minute
+  const filteredData = library.occupancy?.history.filter((item) => {
+    // Parse the timestamp of the item
+    const itemTimestamp = new Date(item.timestamp);
 
-  // const lastOneMinuteOccupancies = occupancyHistory.filter((occupancy) => {
-  //   const timestamp = moment(occupancy.timestamp, "M/D/YYYY, h:mm:ss A");
-  //   return timestamp.isBetween(oneMinuteAgo, now);
-  // });
+    // Calculate the time difference in milliseconds
+    const timeDifference = currentTimestamp - itemTimestamp;
 
-  // const capacity = library.capacity;
+    // Check if the item occurred in the previous one minute (60000 milliseconds)
+    return timeDifference <= 60000;
+  });
 
-  // const currentPeopleCount = lastOneMinuteOccupancies.reduce(
-  //   (sum, occupancy) => sum + occupancy.peopleCount,
-  //   0
-  // );
+  const capacity = library.capacity;
 
-  // const lastOneMinuteOccupanciesCount = lastOneMinuteOccupancies.length;
+  const currentPeopleCount = filteredData.reduce(
+    (sum, occupancy) => sum + occupancy.peopleCount,
+    0
+  );
 
-  // const occupancyPercentage =
-  //   lastOneMinuteOccupanciesCount > 0
-  //     ? currentPeopleCount / (lastOneMinuteOccupanciesCount * capacity)
-  //     : 0;
+  const filteredDataCount = filteredData.length;
 
   const occupancyPercentage =
-    occupancyHistory[occupancyHistory.length - 1].peopleCount /
-    library.capacity;
+    filteredDataCount > 0
+      ? currentPeopleCount / (filteredDataCount * capacity)
+      : 0;
 
-  return occupancyPercentage;
+  return parseFloat(occupancyPercentage.toFixed(2));
 }
 
 module.exports = calculateOccupancyPercentage;
