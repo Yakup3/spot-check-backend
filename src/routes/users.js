@@ -128,7 +128,8 @@ router.get("/favorite-libraries/:id", authenticate, async (req, res) => {
         id: library._id,
         name: library.name,
         location: library.location,
-        occupancyPercentage: calculateOccupancyPercentage(library),
+        occupancyPercentage:
+          calculateOccupancyPercentage(library).occupancyPercentage,
       };
     });
 

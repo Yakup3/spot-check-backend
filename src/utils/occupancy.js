@@ -6,6 +6,9 @@ function calculateOccupancyPercentage(library) {
   const now = Date.now();
   const oneMinuteAgo = now - ONE_MINUTE_IN_MS;
 
+  console.log(Date.parse(occupancyHistory[0].timestamp) >= oneMinuteAgo);
+  console.log(occupancyHistory[0].timestamp);
+
   const lastOneMinuteOccupancies = occupancyHistory.filter((occupancy) => {
     const timestamp = Date.parse(occupancy.timestamp);
     return timestamp >= oneMinuteAgo;
@@ -23,7 +26,10 @@ function calculateOccupancyPercentage(library) {
   const occupancyPercentage =
     currentPeopleCount / lastOneMinuteOccupanciesCount;
 
-  return occupancyPercentage || 0;
+  return {
+    occupancyPercentage: occupancyPercentage || 0,
+    lastOneMinuteOccupancies,
+  };
 }
 
 module.exports = calculateOccupancyPercentage;

@@ -52,11 +52,15 @@ router.get("/", authenticate, async (req, res) => {
 
     const libraries = await db.collection(collectionName).find().toArray();
 
+    const { occupancyPercentage, lastOneMinuteOccupancies } =
+      calculateOccupancyPercentage(library);
+
     const libraryList = libraries.map((library) => ({
       id: library._id,
       name: library.name,
       location: library.location,
-      occupancyPercentage: calculateOccupancyPercentage(library),
+      occupancyPercentage: occupancyPercentage,
+      lastOneMinuteOccupancies,
     }));
 
     res.status(200).json({ libraryList, success: true });
