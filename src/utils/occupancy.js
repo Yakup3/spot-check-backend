@@ -1,14 +1,14 @@
-const ONE_MINUTE_IN_MS = 600000;
+const moment = require("moment");
 
 function calculateOccupancyPercentage(library) {
   const occupancyHistory = library.occupancy?.history || [];
 
-  const now = new Date();
-  const oneMinuteAgo = new Date(now.getTime() - ONE_MINUTE_IN_MS);
+  const now = moment();
+  const oneMinuteAgo = moment(now).subtract(10, "minutes");
 
   const lastOneMinuteOccupancies = occupancyHistory.filter((occupancy) => {
-    const timestamp = new Date(occupancy.timestamp);
-    return timestamp >= oneMinuteAgo && timestamp <= now;
+    const timestamp = moment(occupancy.timestamp, "M/D/YYYY, h:mm:ss A");
+    return timestamp.isBetween(oneMinuteAgo, now);
   });
 
   const capacity = library.capacity;
@@ -25,7 +25,7 @@ function calculateOccupancyPercentage(library) {
       ? currentPeopleCount / (lastOneMinuteOccupanciesCount * capacity)
       : 0;
 
-  return occupancyPercentage;
+  return occupancyPercentage.toFixed(2);
 }
 
 module.exports = calculateOccupancyPercentage;
